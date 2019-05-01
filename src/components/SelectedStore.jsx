@@ -6,16 +6,20 @@ class SelectedStore extends React.Component {
   };
 
   componentDidMount() {
-    
     window.addEventListener("storeChanged", this.onStoreChange);
+    this.setSelectedStore();
   }
 
   onStoreChange = event => {
     console.log(localStorage.getItem("selectedStore"));
+    this.setSelectedStore();
+  };
+
+  setSelectedStore() {
     let selectedStore = this.state.selectedStore;
     selectedStore = JSON.parse(localStorage.getItem("selectedStore"));
     this.setState({ selectedStore });
-  };
+  }
 
   render() {
     let store = this.state.selectedStore;
