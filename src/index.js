@@ -1,5 +1,7 @@
 import React from "react";
 import { render } from "react-dom";
-import App from "./components/app";
+import SelectedStore from "./components/SelectedStore";
+import StoreLocator from "./components/StoreLocator";
 
-render(<App />, document.querySelector("#app"));
+render(<SelectedStore />, document.querySelector("#selected-store"));
+render(<StoreLocator />, document.querySelector("#store-locator"));
