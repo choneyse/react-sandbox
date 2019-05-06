@@ -6,10 +6,11 @@ import { ReactBingmaps } from "react-bingmaps";
 class StoreLocator extends React.Component {
   props = {};
   state = {
-    searchParams: {
-      zip: 60614,
+    searchString: "",
+    bingKey: "Ak7CB4zWidZFVO3KrtQyLJrj-zjp0hB2sNHt73TYwBs0C0if68JFJSMIMhHRkyJE",
+    storeQuery: {
       client: "myford",
-      radius: 50
+      radius: 10
     }
   };
 
@@ -32,7 +33,7 @@ class StoreLocator extends React.Component {
 
   handleQueryChange = e => {
     let currentState = this.state;
-    currentState.searchParams.zip = e.currentTarget.value;
+    currentState.searchString = e.currentTarget.value;
     this.setState(currentState);
   };
 
@@ -40,14 +41,16 @@ class StoreLocator extends React.Component {
     e.preventDefault();
     axios
       .post(
-        "https://www.digitalservices.ford.com/sharedServices/getqldealersbyzip.do",
-        this.state.searchParams
+        "http://dev.virtualearth.net/REST/v1/Locations/q?=",
+        this.state.searchString,
+        this.state.bingKey
       )
       .then(function(response) {
         console.log(response.data);
       })
       .catch(function(error) {
         console.log(error);
+        // "https://www.digitalservices.ford.com/sharedServices/getqldealersbyzip.do",
       });
   };
 
@@ -61,7 +64,7 @@ class StoreLocator extends React.Component {
             type="text"
             placeholder="Enter Zip Code or Address"
             onChange={this.handleQueryChange}
-            value={this.state.searchParams.zip}
+            value={this.state.searchString}
             name="zip"
           />
           <button type="submit">Submit</button>
@@ -79,10 +82,10 @@ class StoreLocator extends React.Component {
         })}
         <button onClick={this.clearStore}>Clear Store</button>
         <div>
-          <ReactBingmaps
+          {/* <ReactBingmaps
             style="{{ height:500px}}"
             bingmapKey="Ak7CB4zWidZFVO3KrtQyLJrj-zjp0hB2sNHt73TYwBs0C0if68JFJSMIMhHRkyJE"
-          />
+          /> */}
         </div>
       </div>
     );
