@@ -1,15 +1,21 @@
 import React from "react";
+import axios from "axios";
 import searchResults from "./searchResults";
+import { ReactBingmaps } from "react-bingmaps";
 
 class StoreLocator extends React.Component {
-  // constructor() {
-  //   super();
-  //   const storeChangeEvent = new Event("storeChanged");
-  // }
-  componentDidMount() {
-    // console.log(searchResults[0].dealerList);
-    // console.log(Object.keys(searchResults));
-  }
+  props = {};
+  state = {
+    searchParams: {
+      zip: 60614,
+      client: "myford",
+      radius: 50
+    }
+  };
+
+  componentDidMount = () => {
+    // this.handleFormSubmit();
+  };
 
   changeStore = e => {
     localStorage.setItem(
@@ -24,14 +30,43 @@ class StoreLocator extends React.Component {
     window.dispatchEvent(new Event("storeChanged"));
   };
 
+  handleQueryChange = e => {
+    let currentState = this.state;
+    currentState.searchParams.zip = e.currentTarget.value;
+    this.setState(currentState);
+  };
+
+  handleFormSubmit = e => {
+    e.preventDefault();
+    axios
+      .post(
+        "https://www.digitalservices.ford.com/sharedServices/getqldealersbyzip.do",
+        this.state.searchParams
+      )
+      .then(function(response) {
+        console.log(response.data);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  };
+
   render() {
-    console.log(searchResults);
     const dealerList = searchResults.dealerList;
     return (
-      <React.Fragment>
+      <div style={{ height: "500px" }}>
         <h1> Store Locator </h1>
+        <form onSubmit={this.handleFormSubmit}>
+          <input
+            type="text"
+            placeholder="Enter Zip Code or Address"
+            onChange={this.handleQueryChange}
+            value={this.state.searchParams.zip}
+            name="zip"
+          />
+          <button type="submit">Submit</button>
+        </form>
         {dealerList.map((dealer, index) => {
-          console.log(dealer);
           return (
             <button
               key={index}
@@ -43,7 +78,13 @@ class StoreLocator extends React.Component {
           );
         })}
         <button onClick={this.clearStore}>Clear Store</button>
-      </React.Fragment>
+        <div>
+          <ReactBingmaps
+            style="{{ height:500px}}"
+            bingmapKey="Ak7CB4zWidZFVO3KrtQyLJrj-zjp0hB2sNHt73TYwBs0C0if68JFJSMIMhHRkyJE"
+          />
+        </div>
+      </div>
     );
   }
 }
